@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "es2017",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "dist",
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "typeRoots": ["../node_modules/@types"],
+    "types": ["reflect-metadata", "jest", "mocha", "node", "@types/jest"],
+    "incremental": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/app.ts", "src/**/*.ts", "__tests__/**/*.test.ts"],
+  "exclude": ["node_modules"],
+  "lib": ["es2015"]
+}

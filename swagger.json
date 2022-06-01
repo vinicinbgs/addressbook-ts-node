@@ -1,0 +1,264 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Address Book API",
+    "description": "API to Register/Auth Users and Add/List Contacts",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/healthcheck": {
+      "get": {
+        "tags": ["Healthcheck"],
+        "summary": "Healthcheck",
+        "description": "Check if the API is responsive",
+        "operationId": "healthCheck",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "API Working",
+            "schema": {
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "default": 200
+                },
+                "message": {
+                  "type": "string",
+                  "default": "I'm alive 💓"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Register new user",
+        "description": "Register new user and return token JWT",
+        "operationId": "registerUser",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User registered successfully",
+            "schema": {
+              "$ref": "#/definitions/RegisterResponse"
+            },
+            "headers": {
+              "x-access-token": {
+                "type": "string",
+                "format": "date-time",
+                "description": "token will expires in 12 hour"
+              }
+            }
+          },
+          "422": {
+            "description": "Provide valid inputs"
+          },
+          "409": {
+            "description": "This email already exists, please choose another one"
+          }
+        }
+      }
+    },
+    "/api/v1/auth": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Authenticate user",
+        "description": "Authenticate user and return token JWT",
+        "operationId": "authUser",
+        "produces": ["application/xml", "application/json"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login was successful",
+            "headers": {
+              "x-access-token": {
+                "type": "string",
+                "format": "date-time",
+                "description": "token will expires in 12 hour"
+              }
+            }
+          },
+          "400": {
+            "description": "Email or Password incorrect"
+          },
+          "422": {
+            "description": "Provide valid inputs"
+          }
+        }
+      }
+    },
+    "/api/v1/contacts": {
+      "post": {
+        "tags": ["Contact"],
+        "summary": "Add new contact",
+        "description": "Add new contact to the user logged account",
+        "operationId": "createContact",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AddContactResponse"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "description": "JWT"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact created successfully"
+          },
+          "400": {
+            "description": "Provide valid inputs"
+          },
+          "401": {
+            "description": "Unauthenticated request, please make login"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Contact"],
+        "summary": "List all contacts",
+        "description": "List all contacts of logged user",
+        "operationId": "listContacts",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "description": "JWT"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List all contacts successfully",
+            "schema": {
+              "$ref": "#/definitions/ListContactResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthenticated request, please make login"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "User"
+      }
+    },
+    "RegisterResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "User"
+      }
+    },
+    "AuthResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "User"
+      }
+    },
+    "Contact": {
+      "type": "object",
+      "properties": {
+        "first_name": {
+          "type": "string"
+        },
+        "last_name": {
+          "type": "string"
+        },
+        "phone_number": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      }
+    },
+    "AddContactResponse": {
+      "type": "object",
+      "$ref": "#/definitions/Contact"
+    },
+    "ListContactResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Contact"
+          }
+        }
+      }
+    }
+  }
+}

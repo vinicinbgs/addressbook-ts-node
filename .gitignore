@@ -1,0 +1,6 @@
+node_modules
+dist
+.env
+.DS_Store
+src/pino.log
+package-lock.json

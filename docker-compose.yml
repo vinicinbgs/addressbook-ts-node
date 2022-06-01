@@ -1,0 +1,39 @@
+version: '3.9'
+services:
+  api:
+    build:
+      context: ./
+      dockerfile: ./docker/api/Dockerfile
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - api-network
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    links:
+      - 'db'
+  db:
+    image: postgres:14.2-alpine
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: address-book
+    networks:
+      - api-network
+
+  db-admin:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - api-network
+
+networks:
+  api-network:
+    driver: bridge
